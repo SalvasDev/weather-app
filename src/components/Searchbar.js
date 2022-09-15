@@ -95,9 +95,11 @@ const Searchbar = ({setShowbar}) => {
     const [ location, setLocation ] = useState('')
     const [ error, setError ] = useState(false)
     const [ consult, setConsult ] = useState(false)
-    const { cities } = useCities(location, consult, setConsult)
+    // const { cities } = useCities(location, consult, setConsult)
 
-// console.log(cities)
+    const [ places, setPlaces ] = useState ([])
+    const [ placeMatch, setPlaceMatch ] = useState([])
+    
 
 
     // Hide the searchbar
@@ -106,16 +108,15 @@ const Searchbar = ({setShowbar}) => {
         setShowbar(false)
     }
 ///////////////////////////////
-
-
+    
+    
 
 
 
     // Function for set items into state
-    const handleChange = e => {        
+    const handleChange = e => {     
         setLocation(e.target.value)
     }
-
 
 
     // When user click subtmit on form
@@ -128,6 +129,58 @@ const Searchbar = ({setShowbar}) => {
         setError(false)
         setConsult(true)
     }
+    
+    
+    
+    
+    
+    
+
+    const key = 'xlrN7OIuIl0VMtnIjjFBnDhKBVT7g0xM'
+
+
+    const loadPlaces = async (location) => {
+
+        console.log(location)
+
+        const base = 'http://dataservice.accuweather.com/locations/v1/cities/search'
+        const query = `?apikey=${key}&q=${location}`
+        const response = await fetch(base + query)
+        const data = await response.json();
+        setPlaces(data)
+        console.log(places[0])
+
+        setConsult(false)
+    }
+    
+
+
+    useEffect(( ) => {
+        loadPlaces(location)
+        // loadPlaces(location).then(data => console.log(data)).catch(err => console.log(err))
+    }, [consult]) 
+
+
+
+
+ 
+
+
+
+
+
+
+
+    // For the complete
+    // const searchPlaces = (text) => {
+    //     let matches = places.filter((location) => {
+    //         const regex = new RegExp(`${text}`, 'gi')
+    //         return location.name.match(regex) || country.capital.match(regex)
+    //     })
+    // }
+
+
+
     
 
 
@@ -149,6 +202,7 @@ const Searchbar = ({setShowbar}) => {
                 id = {location}
                 placeholder='Search location'
                 onChange={handleChange}
+                // onChange={(e) => searchPlaces(e.target.value)}
                 className="inpsearch"
             />         
              <span className="material-symbols-rounded zoom"> search </span>  
