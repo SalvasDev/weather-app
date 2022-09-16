@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from '@emotion/styled';
+import Searchbar from './components/Searchbar';
 import Asidebar from './components/Asidebar';
 import Content from './components/Content';
 
@@ -11,9 +12,14 @@ const Container = styled.div`
 `;
 
 function App() {
+
+    const [ showbar, setShowbar ] = useState(false)
+    const [ showaside, setShowaside ] = useState(true)
+
   return (
     <Container >
-       <Asidebar/>
+      { showbar ? <Searchbar setShowbar={setShowbar} setShowaside = {setShowaside}/> : null}
+       { showaside ? <Asidebar setShowbar = {setShowbar}/> : null } 
        <div className="content"> 
           <Content />
         </div>      

@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './asidebar.css'
-import Searchbar from './Searchbar'
 import shower from '../img/Shower.png'
 import styled from '@emotion/styled'
 
@@ -94,9 +93,8 @@ const Container = styled.div`
 
 
 
-const Asidebar = () => {
+const Asidebar = ({setShowbar}) => {
 
-  const [ showbar, setShowbar ] = useState(false)
 
 
   const handleClick = (e) => {
@@ -107,8 +105,6 @@ const Asidebar = () => {
 
   return (
     <Container>
-
-      { showbar ? <Searchbar setShowbar={setShowbar}/> : null}
 
         <div className="aside__bar">
             <div className= 'row_search'>

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
-// import { CSSTransition, SwitchTransition} from 'react-transition-group';
+import Btnplace from './Btnplace';
 import { useCities } from './hooks/useCities';
+import axios from 'axios';
 import styled from '@emotion/styled'
+
+
 
 const Container = styled.div`
     width: 100%;
     height: 100%;
     background-color: var(--bluedark);
-
-
-
+   
 
     .cancel {
         border: none;
@@ -83,29 +84,38 @@ const Container = styled.div`
         margin-left: 5rem;
         margin-bottom: 2rem;
     }
+    .list__cities {
+        margin-top: 4rem;
+    }
 
 
 `;
 
 
 
-const Searchbar = ({setShowbar}) => {
+const Searchbar = ({setShowbar, setShowaside}) => {
 
     // Form state
     const [ location, setLocation ] = useState('')
     const [ error, setError ] = useState(false)
     const [ consult, setConsult ] = useState(false)
-    // const { cities } = useCities(location, consult, setConsult)
+    const { cities } = useCities( location, consult, setConsult)
 
     const [ places, setPlaces ] = useState ([])
-    const [ placeMatch, setPlaceMatch ] = useState([])
     
+
+    // const [dataConsult, setDataConsult ] = useState()
+    
+    useEffect(() =>{
+        setShowaside(false)
+    },[])
 
 
     // Hide the searchbar
     const handleClose = e => {
         e.preventDefault()
         setShowbar(false)
+        setShowaside (true)
     }
 ///////////////////////////////
     
@@ -129,62 +139,64 @@ const Searchbar = ({setShowbar}) => {
         setError(false)
         setConsult(true)
     }
+
+
     
-    
-    
-    
-    
-    
-
-    const key = 'xlrN7OIuIl0VMtnIjjFBnDhKBVT7g0xM'
-
-
-    const loadPlaces = async (location) => {
-
-        console.log(location)
-
-        const base = 'http://dataservice.accuweather.com/locations/v1/cities/search'
-        const query = `?apikey=${key}&q=${location}`
-        const response = await fetch(base + query)
-        const data = await response.json();
-        setPlaces(data)
-        console.log(places[0])
-
-        setConsult(false)
-    }
-    
-
-
+       
+    // Calling the api to get similar cities when consult change
     useEffect(( ) => {
+
+        const loadPlaces = async (location) => {
+                var groupCities = []
+    
+            if (consult) {
+                const key = 'xlrN7OIuIl0VMtnIjjFBnDhKBVT7g0xM'
+
+                const base = 'http://dataservice.accuweather.com/locations/v1/cities/search'
+                const query = `?apikey=${key}&q=${location}`
+                const response = await axios.get(base + query)
+                
+
+
+                for ( let i = 0; (groupCities.length < 6) ; i++ ) {               
+                    
+
+                    if (groupCities.length === 0 ) {
+                        groupCities.push(response.data[i])
+
+                        setPlaces(groupCities)
+                        setConsult(false)
+                        console.log('Esto es en ciudades');
+                        console.log(groupCities)
+
+                     } else {
+                        if (groupCities[i-1].AdministrativeArea.ID !== response.data[i].AdministrativeArea.ID ) {
+                           groupCities.push(response.data[i])
+                        } else {
+                            return
+                        }
+                    }
+                    if (groupCities.length === response.data.length) {
+                        return
+                    }
+                    setPlaces(groupCities)
+                    setConsult(false)
+
+                }               
+
+                setPlaces(groupCities)
+                setConsult(false)
+           }
+
+        }   
         loadPlaces(location)
-        // loadPlaces(location).then(data => console.log(data)).catch(err => console.log(err))
+
     }, [consult]) 
 
 
 
 
- 
-
-
-
-
-
-
-
-    // For the complete
-    // const searchPlaces = (text) => {
-    //     let matches = places.filter((location) => {
-    //         const regex = new RegExp(`${text}`, 'gi')
-    //         return location.name.match(regex) || country.capital.match(regex)
-    //     })
-    // }
-
-
-
-    
-
-
-
+ var i = 0;
 
   return (
 
@@ -208,13 +220,48 @@ const Searchbar = ({setShowbar}) => {
              <span className="material-symbols-rounded zoom"> search </span>  
             <button type='submit' value='Search location' name="location" className="btnsearch">Search</button>
         </form>
+
+         <div className="list__cities">
+            { places.slice(0, 5).map((place) => {
+                i = i + 1                
+                   
+                    var { AdministrativeArea, Country, LocalizedName, Key } = places[i-1] || {}                   
+
+                    if (places[0] !== undefined ) {
+                    return  <Btnplace 
+                    key = {Key}
+                    state = {AdministrativeArea?.LocalizedName} 
+                    country = {Country?.LocalizedName} 
+                    cityName = {LocalizedName} 
+                    idd = {Key}
+                    />
+                    } else {
+                        return <p className="error">City not founded</p>
+                    }
+                })
+
+            } 
+      
+        </div>      
     </div>
     </Container>
-
   )
 }
 
 export default Searchbar
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     //   <SwitchTransition>
@@ -250,3 +297,47 @@ export default Searchbar
     /* margin-left: -100%; */
     /* transition: all 3s ease-in-out; */
     /* transform: translateX(100%); */
+
+
+
+    // for ( let i = 1; i <= 5; i++ ) {
+               
+            
+    //         if ((resultado.data[numAleat] !== undefined) && (resultado.data[numAleat].capital !== []) && (resultado.data[numAleat].capital))  {
+    //             countGroup.push(resultado.data[numAleat])                
+    //         } else {
+    //             return   
+    //         }
+
+
+                  // if (!groupCities.includes(response.data[i].AdministrativeArea.ID)) {
+                    //     groupCities.push(response.data[i])
+                    //     console.log(groupCities)
+                    // } else {
+                    //     return
+                           
+                    // }               
+                // }
+            // console.log(groupCities)
+
+
+
+
+
+            /////AUTO COMPLETE ///////
+    // const [ placeMatch, setPlaceMatch ] = useState([])
+
+             
+
+// console.log(places[0])
+
+    // For the complete
+    // const searchPlaces = (text) => {
+    //     let matches = places.filter((location) => {
+    //         const regex = new RegExp(`${text}`, 'gi')
+    //         return location.name.match(regex) || country.capital.match(regex)
+    //     })
+    // }
+
+//   let { AdministrativeArea, Country, LocalizedName } = places[0] || {}
+// console.log(LocalizedName + AdministrativeArea?.LocalizedName + Country?.LocalizedName)
