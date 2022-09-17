@@ -2,17 +2,20 @@ import { useState, useEffect } from 'react'
 import getCities from '../../services/getCities'
 
 
-export function useCities(location, consult, setConsult) {
+export function useCities(dataConsult, consult2, setConsult2) {
 
     const [ cities, setCities ] = useState([])
 
     useEffect( () => { 
-      getCities(location, consult, setConsult).then(cities => setCities(cities))
+      getCities(dataConsult, consult2, setConsult2)
+      .then(ciudades => {
+        setCities(ciudades)
+      })
+    }, [consult2])
 
-    }, [consult])
 
   return {cities}
-    
+
 }
 
 

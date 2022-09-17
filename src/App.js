@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import styled from '@emotion/styled';
 import Searchbar from './components/Searchbar';
+import { useCities } from './components/hooks/useCities';
 import Asidebar from './components/Asidebar';
 import Content from './components/Content';
 
@@ -11,11 +12,14 @@ const Container = styled.div`
 
 `;
 
+
 function App() {
 
     const [ showbar, setShowbar ] = useState(false)
     const [ showaside, setShowaside ] = useState(true)
+    
 
+  
   return (
     <Container >
       { showbar ? <Searchbar setShowbar={setShowbar} setShowaside = {setShowaside}/> : null}

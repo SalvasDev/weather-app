@@ -80,9 +80,11 @@ const Container = styled.div`
     }
 
     .error {
-        color: var(--lightgray);
+        color: #EA8282;
+        border-radius: 12px;;
         margin-left: 5rem;
         margin-bottom: 2rem;
+        
     }
     .list__cities {
         margin-top: 4rem;
@@ -99,13 +101,14 @@ const Searchbar = ({setShowbar, setShowaside}) => {
     const [ location, setLocation ] = useState('')
     const [ error, setError ] = useState(false)
     const [ consult, setConsult ] = useState(false)
-    const { cities } = useCities( location, consult, setConsult)
-
+    const [ consult2, setConsult2] = useState(false)
+    const [ dataConsult, setDataConsult ] = useState('') 
     const [ places, setPlaces ] = useState ([])
+    const { cities } = useCities( dataConsult, consult2, setConsult2 )
     
 
-    // const [dataConsult, setDataConsult ] = useState()
-    
+    console.log(`Esto trae cities segun la fecha ${cities}`)
+
     useEffect(() =>{
         setShowaside(false)
     },[])
@@ -166,8 +169,6 @@ const Searchbar = ({setShowbar, setShowaside}) => {
 
                         setPlaces(groupCities)
                         setConsult(false)
-                        console.log('Esto es en ciudades');
-                        console.log(groupCities)
 
                      } else {
                         if (groupCities[i-1].AdministrativeArea.ID !== response.data[i].AdministrativeArea.ID ) {
@@ -194,7 +195,7 @@ const Searchbar = ({setShowbar, setShowaside}) => {
     }, [consult]) 
 
 
-
+    
 
  var i = 0;
 
@@ -234,6 +235,8 @@ const Searchbar = ({setShowbar, setShowaside}) => {
                     country = {Country?.LocalizedName} 
                     cityName = {LocalizedName} 
                     idd = {Key}
+                    setConsult2 = {setConsult2}
+                    setDataConsult = {setDataConsult}
                     />
                     } else {
                         return <p className="error">City not founded</p>

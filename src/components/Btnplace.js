@@ -27,13 +27,21 @@ const Btncity = styled.div`
 `;
 
 
-const Btnplace = ({state, country, cityName, idd}) => {
+const Btnplace = ({state, country, cityName, idd, setConsult2, setDataConsult}) => {
 
 var cityToBtn = cityName + ', ' + state + ', ' + country 
 
+const handleClick = (e, idd, setDataConsult) => {
+  e.preventDefault()
+  setDataConsult(idd)
+  setConsult2(true)
+}
+  
 return (
     <Btncity>
-      <button>
+      <button
+      onClick = {e => handleClick(e, idd, setDataConsult)}
+      >
          {cityToBtn}
       </button>
     </Btncity>
