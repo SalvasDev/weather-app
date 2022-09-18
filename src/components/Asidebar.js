@@ -1,7 +1,19 @@
-import React from 'react'
+import React, {useEffect, useContext} from 'react'
+import CurrentContext from './context/CurrentContext'
+import LocContext from './context/LocContext'
 import './asidebar.css'
-import shower from '../img/Shower.png'
+import Clear from '../img/Clear.png'
+import Hail from '../img/Hail.png'
+import HeavyRain from '../img/HeavyRain.png'
+import LightCloud from '../img/LightCloud.png'
+import LightRain from '../img/LightRain.png'
+import Sleet from '../img/Sleet.png'
+import Snow from '../img/Snow.png'
+import Shower from '../img/Shower.png'
+import HeavyCloud from '../img/HeavyCloud.png'
+import Thunderstorm from '../img/Thunderstorm.png'
 import styled from '@emotion/styled'
+
 
 const Container = styled.div`
     background-color: var(--bluedark);
@@ -74,6 +86,13 @@ const Container = styled.div`
     .today_date {
       color: var(--midgray);
       margin-top: 5rem;
+
+      span {
+        margin-left: .5rem;
+        margin-right: .5rem;
+        font-weight: 700;
+        font-size: 1.8rem;
+      }
     }
 
     .location {
@@ -92,20 +111,105 @@ const Container = styled.div`
 
 
 
+const Asidebar = ({setShowbar, setShowaside}) => {
 
-const Asidebar = ({setShowbar}) => {
+const { consult2, setConsult2, dataConsult, weather, setWeather } = useContext(CurrentContext)
 
+const { location } = useContext(LocContext)
+
+
+    useEffect(() => {
+        setShowaside(true)
+    }, [])
+
+ 
+
+// Getting the current weeather with details and the 5 next days
+
+  useEffect(() => {
+
+      const getCurrentW =  async (dataConsult, consult2, setConsult2) => {
+
+      if (consult2) {
+        const key = '682500PcukwQUtq1UDd6XimUfAmBA5HL'
+        const base = 'http://dataservice.accuweather.com/currentconditions/v1/'
+        const query = `${dataConsult}?apikey=${key}&details=true`
+
+        const response = await fetch(base + query)
+        const dataCurrent = await response.json()
+
+        // setConsult2(false)  
+        console.log(dataCurrent)
+        return dataCurrent[0]       
+      } 
+  }
+    getCurrentW(dataConsult, consult2, setConsult2).then(dataCurrent => {setWeather(dataCurrent)})
+    console.log(weather)
+
+  },[consult2])
+
+   
 
 
   const handleClick = (e) => {
     e.preventDefault()
     setShowbar(true)
+
   }
 
 
+  
+  var icon = 0;
+  var typeweather = 'C' 
+  var temp = 0;
+  var sufijTemp = '';
+
+  var { WeatherIcon, WeatherText, Temperature  } = weather || {}
+
+
+  if (typeweather === 'C') {
+    temp = Math.floor(Temperature?.Metric?.Value)
+    sufijTemp = 'C'
+  }  else if ( typeweather === 'F' ) {
+    temp = Math.floor(Temperature?.Imperial?.Value)
+    sufijTemp = 'F'
+  }
+
+
+
+  if ( (WeatherIcon > 0 && WeatherIcon < 4) || (WeatherIcon > 29 &&  WeatherIcon < 31 ) || (WeatherIcon > 32 && WeatherIcon < 35) ) {
+     icon = Clear 
+  } else if ( (WeatherIcon > 3 && WeatherIcon < 6) || (WeatherIcon > 20 && WeatherIcon < 22) || (WeatherIcon > 34 && WeatherIcon < 37) ) {
+     icon = LightCloud
+  } else if ( (WeatherIcon > 5  && WeatherIcon < 11)  || (WeatherIcon > 18  && WeatherIcon < 21) || (WeatherIcon > 31  && WeatherIcon < 33) || (WeatherIcon > 36  && WeatherIcon < 39) || (WeatherIcon > 42 && WeatherIcon < 44)) {
+    icon = HeavyCloud 
+  } else if ( (WeatherIcon > 11 && WeatherIcon < 13) || (WeatherIcon > 39 && WeatherIcon < 41) )  {
+    icon = Shower
+  } else if ( (WeatherIcon > 12 && WeatherIcon < 15) || (WeatherIcon > 38 && WeatherIcon < 40 ) ) {
+    icon = LightRain 
+  } else if ( (WeatherIcon > 14 && WeatherIcon < 18) || (WeatherIcon > 40 && WeatherIcon < 43 ) ) {
+    icon = Thunderstorm 
+  } else if ( WeatherIcon > 17 && WeatherIcon < 19 ) {
+    icon = HeavyRain 
+  } else if ( (WeatherIcon >23 && WeatherIcon < 25) || (WeatherIcon  > 30 && WeatherIcon < 32 ) ){
+    icon = Snow 
+  } else if ( WeatherIcon > 24 && WeatherIcon < 26 ) {
+    icon = Sleet
+  } else if ( (WeatherIcon > 25 && WeatherIcon < 30) || (WeatherIcon > 43 && WeatherIcon < 45 ) ){
+    icon = Hail
+   return
+  }
+
+  var today =  new Date()
+  var month = today.toDateString()
+  var day = today.getDate()
+  var dayStr = month.substring(0, month.length - 12)
+  var monthStr = month.substring(4, month.length - 7)
+
+
+  
   return (
     <Container>
-
         <div className="aside__bar">
             <div className= 'row_search'>
               <button onClick={ e => { handleClick(e) } } className="btn_search">Search for places</button>
@@ -116,14 +220,14 @@ const Asidebar = ({setShowbar}) => {
             </div>
 
             {/* Bing icon central */}
-            <img className="bigicon_weather" src={shower} alt="Cloud and son" />
-            <h1 className="biggrades_weather">15<span className="type_grades">&ordm;C</span> </h1>
-            <h2 className="type_weather">Shower</h2>    
+            <img className="bigicon_weather" src={icon} alt="Cloud and son" />
+            <h1 className="biggrades_weather">{temp}<span className="type_grades">&ordm;{sufijTemp}</span> </h1>
+            <h2 className="type_weather">{WeatherText}</h2>    
 
             {/* Date */}
 
-            <p className="today_date">Today  -  Fri, 5 Jun</p>
-            <p className="location"><span className="material-symbols-rounded"> location_on </span>Morelia</p>
+            <p className="today_date">Today <span> &#183; </span>  {dayStr}, {day} {monthStr} </p>
+            <p className="location"><span className="material-symbols-rounded"> location_on </span>{location}</p>
 
         </div>
 

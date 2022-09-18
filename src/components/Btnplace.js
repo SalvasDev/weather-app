@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useContext} from 'react'
+import CurrentContext from './context/CurrentContext'
 import styled from '@emotion/styled'
 
 const Btncity = styled.div`
@@ -22,17 +23,20 @@ const Btncity = styled.div`
     
     }  
 
-
-
 `;
 
 
-const Btnplace = ({state, country, cityName, idd, setConsult2, setDataConsult}) => {
+const Btnplace = ({state, country, cityName, idd, setShowaside, setShowbar}) => {
+
+const { setConsult2, setDataConsult } = useContext(CurrentContext)
+ 
 
 var cityToBtn = cityName + ', ' + state + ', ' + country 
 
-const handleClick = (e, idd, setDataConsult) => {
+const handleClick = (e, idd) => {
   e.preventDefault()
+  setShowbar(false)
+  setShowaside(true)
   setDataConsult(idd)
   setConsult2(true)
 }
@@ -40,7 +44,7 @@ const handleClick = (e, idd, setDataConsult) => {
 return (
     <Btncity>
       <button
-      onClick = {e => handleClick(e, idd, setDataConsult)}
+      onClick = {e => handleClick(e, idd)}
       >
          {cityToBtn}
       </button>

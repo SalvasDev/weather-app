@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Btnplace from './Btnplace';
-import { useCities } from './hooks/useCities';
+// import { useCities } from './hooks/useCities';
+import LocContext from './context/LocContext'
 import axios from 'axios';
 import styled from '@emotion/styled'
 
@@ -98,31 +99,24 @@ const Container = styled.div`
 const Searchbar = ({setShowbar, setShowaside}) => {
 
     // Form state
-    const [ location, setLocation ] = useState('')
+
+    const { location, setLocation } = useContext(LocContext)
+
     const [ error, setError ] = useState(false)
-    const [ consult, setConsult ] = useState(false)
-    const [ consult2, setConsult2] = useState(false)
-    const [ dataConsult, setDataConsult ] = useState('') 
+    const [ consult, setConsult ] = useState(false)    
     const [ places, setPlaces ] = useState ([])
-    const { cities } = useCities( dataConsult, consult2, setConsult2 )
     
-
-    console.log(`Esto trae cities segun la fecha ${cities}`)
-
-    useEffect(() =>{
-        setShowaside(false)
-    },[])
-
 
     // Hide the searchbar
     const handleClose = e => {
         e.preventDefault()
         setShowbar(false)
-        setShowaside (true)
     }
 ///////////////////////////////
     
-    
+    useEffect(() => {
+        setShowaside(false)
+    }, [])
 
 
 
@@ -215,7 +209,6 @@ const Searchbar = ({setShowbar, setShowaside}) => {
                 id = {location}
                 placeholder='Search location'
                 onChange={handleChange}
-                // onChange={(e) => searchPlaces(e.target.value)}
                 className="inpsearch"
             />         
              <span className="material-symbols-rounded zoom"> search </span>  
@@ -234,9 +227,9 @@ const Searchbar = ({setShowbar, setShowaside}) => {
                     state = {AdministrativeArea?.LocalizedName} 
                     country = {Country?.LocalizedName} 
                     cityName = {LocalizedName} 
-                    idd = {Key}
-                    setConsult2 = {setConsult2}
-                    setDataConsult = {setDataConsult}
+                    idd = {Key}   
+                    setShowaside = {setShowaside}
+                    setShowbar = { setShowbar }
                     />
                     } else {
                         return <p className="error">City not founded</p>
