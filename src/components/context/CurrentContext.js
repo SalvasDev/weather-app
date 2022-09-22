@@ -5,7 +5,7 @@ const Context = React.createContext({})
 export function CurrentContextProvider ({children}) {
     const [ weather, setWeather ] = useState([])
     const [ weathfive, setWeathFive ] = useState([])
-    const [ consult2, setConsult2 ] = useState(false)
+    const [ consult2, setConsult2 ] = useState(true)
     const [ consult3, setConsult3 ] = useState(false)
     const [ dataConsult, setDataConsult ] = useState('') 
     

@@ -115,7 +115,7 @@ const Container = styled.div`
 
 const Asidebar = ({setShowbar, setShowaside, handleForce}) => {
 
-const { consult2, setConsult2, dataConsult, weather, setWeather, setWeathFive } = useContext(CurrentContext)
+const { consult2, dataConsult, weather, setWeather, setWeathFive } = useContext(CurrentContext)
 
 const { location } = useContext(LocContext)
 const { typeweather } = useContext(TypeWeContext)
@@ -131,7 +131,6 @@ const { typeweather } = useContext(TypeWeContext)
     var dafaultLoc = 0
     
     if (!dataConsult) {
-        setConsult2(true)
         dafaultLoc = 623              
     }  else {
       dafaultLoc = dataConsult
@@ -150,7 +149,6 @@ const { typeweather } = useContext(TypeWeContext)
 
         const response = await fetch(base + query)
         const dataCurrent = await response.json()
-        console.log(dataCurrent[0])
         return dataCurrent[0]       
       } 
 
