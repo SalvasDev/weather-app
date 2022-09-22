@@ -175,7 +175,7 @@ const Searchbar = ({ setShowbar, setShowaside }) => {
             var groupCities = []
 
             if (consult) {
-                const key = '682500PcukwQUtq1UDd6XimUfAmBA5HL'
+                const key = 'xlrN7OIuIl0VMtnIjjFBnDhKBVT7g0xM'
 
                 const base = 'http://dataservice.accuweather.com/locations/v1/cities/search'
                 const query = `?apikey=${key}&q=${location}`

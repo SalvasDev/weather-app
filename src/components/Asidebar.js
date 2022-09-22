@@ -144,7 +144,7 @@ const { typeweather } = useContext(TypeWeContext)
       const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}, consult2) => {
 
       if (consult2) {
-        const key = '682500PcukwQUtq1UDd6XimUfAmBA5HL'
+        const key = 'xlrN7OIuIl0VMtnIjjFBnDhKBVT7g0xM'
         const base = 'http://dataservice.accuweather.com/currentconditions/v1/'
         const query = `${dataConsult}?apikey=${key}&details=true`
 
@@ -163,7 +163,7 @@ const { typeweather } = useContext(TypeWeContext)
 
 const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
 
-        const key = '682500PcukwQUtq1UDd6XimUfAmBA5HL'
+        const key = 'xlrN7OIuIl0VMtnIjjFBnDhKBVT7g0xM'
         const base = 'http://dataservice.accuweather.com/forecasts/v1/daily/5day/'
         const query = `${dataConsult}?apikey=${key}`
 
