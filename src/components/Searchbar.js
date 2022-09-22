@@ -175,11 +175,10 @@ const Searchbar = ({ setShowbar, setShowaside }) => {
             var groupCities = []
 
             if (consult) {
-                const key = 'xlrN7OIuIl0VMtnIjjFBnDhKBVT7g0xM'
-
-                const base = 'http://dataservice.accuweather.com/locations/v1/cities/search'
+                const key = process.env.REACT_APP_KEY
+                const baseCities =  process.env.REACT_APP_BASECITIES
                 const query = `?apikey=${key}&q=${location}`
-                const response = await axios.get(base + query)
+                const response = await axios.get(baseCities + query)
 
 
 
