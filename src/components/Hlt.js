@@ -88,16 +88,7 @@ const Conthlt = styled.div`
             background-color: var(--lightgray);
             border-radius: 8px;
 
-        }
-
-        .bar_porcent {
-            width: 84%;
-            height: 100%;
-            background-color: var( --yellowg);
-            border-radius: 8px;
-
-        }
-
+        }  
 
         .porcent {
             margin-right: 0;
@@ -106,7 +97,11 @@ const Conthlt = styled.div`
 `;
 
 
-const Hlt = ({titlehlt, textresult, typemeassure}) => {
+
+
+const Hlt = ({titlehlt, textresult, typemeassure, direction, porcentClass }) => {
+
+
   return (
     <Conthlt>
         <p className="titleclass">{titlehlt}</p>
@@ -114,7 +109,7 @@ const Hlt = ({titlehlt, textresult, typemeassure}) => {
         { titlehlt === 'Wind status' ?
         <div className="locnear">
             <div className="iconnear"><span className="material-symbols-rounded"> near_me </span></div>
-            <h3 className="loctext">WSW</h3>
+            <h3 className="loctext">{direction}</h3>
         </div>
         : null}
         
@@ -126,7 +121,11 @@ const Hlt = ({titlehlt, textresult, typemeassure}) => {
                 <p className="nivporc">100</p>
             </div>
             <div className="bar">
-                <div className="bar_porcent"></div>
+                <div style={{ width: `${porcentClass}%`,
+                    height: '100%', 
+                    backgroundColor: '#FFEC65', 
+                    borderRadius: '8px' }}> 
+                </div>
             </div>
             <p className="nivporc porcent">%</p>
         </div>

@@ -28,17 +28,19 @@ const Btncity = styled.div`
 
 const Btnplace = ({state, country, cityName, idd, setShowaside, setShowbar}) => {
 
-const { setConsult2, setDataConsult } = useContext(CurrentContext)
+const { setConsult2, setConsult3, setDataConsult } = useContext(CurrentContext)
  
 
 var cityToBtn = cityName + ', ' + state + ', ' + country 
 
 const handleClick = (e, idd) => {
   e.preventDefault()
-  setShowbar(false)
-  setShowaside(true)
+  
   setDataConsult(idd)
   setConsult2(true)
+  setConsult3(true)
+  setShowbar(false)
+  setShowaside(true)
 }
   
 return (

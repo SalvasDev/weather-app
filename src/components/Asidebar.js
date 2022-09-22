@@ -1,7 +1,8 @@
 import React, {useEffect, useContext} from 'react'
+import './asidebar.css'
 import CurrentContext from './context/CurrentContext'
 import LocContext from './context/LocContext'
-import './asidebar.css'
+import TypeWeContext from './context/TypeWeContext'
 import Clear from '../img/Clear.png'
 import Hail from '../img/Hail.png'
 import HeavyRain from '../img/HeavyRain.png'
@@ -68,6 +69,7 @@ const Container = styled.div`
       color: var(--lightgray);
       font-weight: 500;
       margin-top: 10rem;
+      margin-bottom: 5rem;
     }
 
     .type_grades {
@@ -80,7 +82,7 @@ const Container = styled.div`
       font-weight: 500;
       color: var(--midgray);
       font-size: 3.6rem;
-      margin-top: 3rem;
+      margin-top: 0;
     }
     
     .today_date {
@@ -111,24 +113,35 @@ const Container = styled.div`
 
 
 
-const Asidebar = ({setShowbar, setShowaside}) => {
+const Asidebar = ({setShowbar, setShowaside, handleForce}) => {
 
-const { consult2, setConsult2, dataConsult, weather, setWeather } = useContext(CurrentContext)
+const { consult2, setConsult2, dataConsult, weather, setWeather, setWeathFive } = useContext(CurrentContext)
 
 const { location } = useContext(LocContext)
+const { typeweather } = useContext(TypeWeContext)
+
 
 
     useEffect(() => {
         setShowaside(true)
     }, [])
 
- 
 
+
+    var dafaultLoc = 0
+    
+    if (!dataConsult) {
+        setConsult2(true)
+        dafaultLoc = 623              
+    }  else {
+      dafaultLoc = dataConsult
+    }
+
+  
 // Getting the current weeather with details and the 5 next days
-
   useEffect(() => {
 
-      const getCurrentW =  async (dataConsult, consult2, setConsult2) => {
+      const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}, consult2) => {
 
       if (consult2) {
         const key = '682500PcukwQUtq1UDd6XimUfAmBA5HL'
@@ -137,30 +150,51 @@ const { location } = useContext(LocContext)
 
         const response = await fetch(base + query)
         const dataCurrent = await response.json()
-
-        // setConsult2(false)  
-        console.log(dataCurrent)
+        console.log(dataCurrent[0])
         return dataCurrent[0]       
       } 
+
   }
-    getCurrentW(dataConsult, consult2, setConsult2).then(dataCurrent => {setWeather(dataCurrent)})
-    console.log(weather)
+
+  getCurrentW(dataConsult, consult2).then(dataCurrent => {setWeather(dataCurrent)})
+
+
+
+
+const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
+
+        const key = '682500PcukwQUtq1UDd6XimUfAmBA5HL'
+        const base = 'http://dataservice.accuweather.com/forecasts/v1/daily/5day/'
+        const query = `${dataConsult}?apikey=${key}`
+
+        const response = await fetch(base + query)
+        const data = await response.json()
+        return data.DailyForecasts       
+  }
+    getFive(dataConsult).then(fivedays => {setWeathFive(fivedays)} )
+
+
 
   },[consult2])
 
-   
+    
 
 
   const handleClick = (e) => {
     e.preventDefault()
+    setShowaside(false)
     setShowbar(true)
 
   }
 
 
+  const handleSubmit = () => {
+        handleForce()
+    } 
+
+
   
   var icon = 0;
-  var typeweather = 'C' 
   var temp = 0;
   var sufijTemp = '';
 
@@ -207,6 +241,7 @@ const { location } = useContext(LocContext)
   var monthStr = month.substring(4, month.length - 7)
 
 
+
   
   return (
     <Container>
@@ -214,7 +249,7 @@ const { location } = useContext(LocContext)
             <div className= 'row_search'>
               <button onClick={ e => { handleClick(e) } } className="btn_search">Search for places</button>
                 
-                  <button className="btncross_search">
+                  <button onClick = { () => handleSubmit()} className="btncross_search">
                     <span className="material-symbols-rounded">my_location</span>
                   </button>
             </div>
@@ -227,7 +262,7 @@ const { location } = useContext(LocContext)
             {/* Date */}
 
             <p className="today_date">Today <span> &#183; </span>  {dayStr}, {day} {monthStr} </p>
-            <p className="location"><span className="material-symbols-rounded"> location_on </span>{location}</p>
+            <p className="location"><span className="material-symbols-rounded"> location_on </span>{location || 'Paris'}</p>
 
         </div>
 
@@ -236,3 +271,5 @@ const { location } = useContext(LocContext)
 }
 
 export default Asidebar
+
+

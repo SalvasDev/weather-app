@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
+import TypeWeContext from './context/TypeWeContext'
 import Listdays from './Listdays';
 import ListHlts from './ListHlts';
 import Footer from './Footer'
@@ -55,26 +56,36 @@ const Container = styled.div`
   }
   .title_hlts {
     color: var(--lightgray);
-    margin-top: 7.2rem;
+    margin-top: 5rem;
     font-size: 2.4rem;
     font-weight: 500;
 
   }
-
-
 `;
 
 
 const Content = () => {
+
+const { setTypeWeather } = useContext(TypeWeContext)
+
+
+const handleClick = (e, type) => {
+  e.preventDefault()
+  setTypeWeather(type)
+  
+}
+
+
+
   return (
     <Container>
       <div className='btns_typegrad'>
-        <button className="centigrade">&ordm;C</button>
-        <button className="farenheit">&ordm;F</button>
+        <button onClick={e => handleClick(e, 'C')} className="centigrade">&ordm;C</button>
+        <button onClick={e => handleClick(e, 'F')} className="farenheit">&ordm;F</button>
       </div>
-      <Listdays/>
+      <Listdays />
       <h2 className="title_hlts">Todays Hightlights </h2>
-      <ListHlts/>
+      <ListHlts />
       <Footer author='Salvador Sánchez'/>
     </Container>
   )

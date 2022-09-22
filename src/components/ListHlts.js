@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import CurrentContext from './context/CurrentContext'
 import Hlt from './Hlt'
 import styled from '@emotion/styled'
 
@@ -8,16 +9,30 @@ const ContList = styled.div`
     column-gap: 3rem;
     row-gap: 3rem;
     
+    @media (max-width: 810px) {
+      margin-right: 2rem;
+    }
+
+    @media (max-width: 510px) {
+      width: 100%            
+     }
 `;
 
 
 const ListHlts = () => {
+
+  const { weather } = useContext(CurrentContext)
+  
+  var { WindGust, Wind, RelativeHumidity, Visibility, Pressure } = weather || {} 
+
+    
+
   return (
     <ContList>
-        <Hlt titlehlt = 'Wind status' textresult='7' typemeassure='mph'/>
-        <Hlt titlehlt = 'Humidity' textresult='84' typemeassure='%'/>
-        <Hlt titlehlt = 'Visibility'textresult='6.4' typemeassure='miles'/>
-        <Hlt titlehlt = 'Air Pressure'textresult='998' typemeassure='mb'/>
+        <Hlt titlehlt = 'Wind status' textresult={Math.round(WindGust?.Speed?.Imperial?.Value)} typemeassure='mph' direction = {Wind?.Direction?.Localized}/>
+        <Hlt titlehlt = 'Humidity' textresult={RelativeHumidity} typemeassure='%' porcentClass = {RelativeHumidity}/>
+        <Hlt titlehlt = 'Visibility' textresult={Visibility?.Imperial?.Value} typemeassure='miles'/>
+        <Hlt titlehlt = 'Air Pressure'textresult= {Math.round(Pressure?.Metric?.Value)} typemeassure='mb'/>
     </ContList>
   )
 }

@@ -2,14 +2,14 @@ import React, {useState} from 'react'
 
 const Context = React.createContext({})
 
-export function LocContextProvider ({children}) {
-    const [ location, setLocation ] = useState('')
+export function TypeWContextProvider ({children}) {
+    const [ typeweather, setTypeWeather ] = useState('C')
 
- 
+    
 
     return (
     
-    <Context.Provider value={{location, setLocation}}>
+    <Context.Provider value={{typeweather, setTypeWeather}}>
         {children}
     </Context.Provider>
     )
