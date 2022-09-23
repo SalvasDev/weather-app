@@ -113,12 +113,13 @@ const Container = styled.div`
 
 
 
-const Asidebar = ({setShowbar, setShowaside, handleForce}) => {
+const Asidebar = ({setShowbar, setShowaside, handleForce, coordenades, consCoord}) => {
 
-const { consult2, dataConsult, weather, setWeather, setWeathFive } = useContext(CurrentContext)
+const { consult2, dataConsult, setDataConsult, weather, setWeather, setWeathFive } = useContext(CurrentContext)
 
-const { location } = useContext(LocContext)
+const { location, setLocation } = useContext(LocContext)
 const { typeweather } = useContext(TypeWeContext)
+
 
 
 
@@ -136,27 +137,71 @@ const { typeweather } = useContext(TypeWeContext)
       dafaultLoc = dataConsult
     }
 
-  
+ 
 // Getting the current weeather with details and the 5 next days
+
+
   useEffect(() => {
+  // If we have coords then make a special query with a coords
+      if (consCoord) {
 
-      const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}, consult2) => {
+          const getCurrentCoords =  async (coordenades) => {
+          var { lat, lng } = coordenades  
+    
+            var lat2 = parseFloat(lat.toFixed(3))
+            var lng2 = parseFloat(lng.toFixed(3))
 
-      if (consult2) {
-        const key = process.env.REACT_APP_KEY
-        const base = process.env.REACT_APP_BASECURR
-        const query = `${dataConsult}?apikey=${key}&details=true`
+            const key = process.env.REACT_APP_KEY
+            const baseCoords = process.env.REACT_APP_BASECOORDS
+            const query = `?apikey=${key}&q=${lat2},${lng2}`
 
-        const response = await fetch(base + query)
-        const dataCurrent = await response.json()
-        return dataCurrent[0]       
-      } 
+            const response = await fetch(baseCoords+query)
 
-  }
+            const dataCurrent = await response.json()
+            console.log(dataCurrent)
+            // setLocation(dataCurrent.LocalizedName)
+            return dataCurrent.Key                
+      }
 
-  getCurrentW(dataConsult, consult2).then(dataCurrent => {setWeather(dataCurrent)})
+      // Set the weather with key founded with coords
+      getCurrentCoords(coordenades).then(dataCurrent => {setDataConsult(dataCurrent)})
 
 
+          const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}, consult2) => {
+
+            const key = process.env.REACT_APP_KEY
+            const base = process.env.REACT_APP_BASECURR
+            const query = `${dataConsult}?apikey=${key}&details=true`
+
+            const response = await fetch(base + query)
+            const dataCurrent = await response.json()
+            return dataCurrent[0]       
+          } 
+
+      getCurrentW(dataConsult, consult2).then(dataCurrent => {setWeather(dataCurrent)})
+ 
+    }  else if (!consCoord) {
+
+          // If dont have coords then consult with a default city
+
+          const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}, consult2) => {
+
+          if (consult2) {
+            const key = process.env.REACT_APP_KEY
+            const base = process.env.REACT_APP_BASECURR
+            const query = `${dataConsult}?apikey=${key}&details=true`
+
+            const response = await fetch(base + query)
+            const dataCurrent = await response.json()
+            return dataCurrent[0]       
+          } 
+
+      }
+
+      getCurrentW(dataConsult, consult2).then(dataCurrent => {setWeather(dataCurrent)})
+
+    }     
+      
 
 
 const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
@@ -198,6 +243,8 @@ const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
 
   var { WeatherIcon, WeatherText, Temperature  } = weather || {}
 
+  // console.log('esto hay en weather');
+  // console.log(weather);
 
   if (typeweather === 'C') {
     temp = Math.floor(Temperature?.Metric?.Value)
@@ -260,7 +307,7 @@ const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
             {/* Date */}
 
             <p className="today_date">Today <span> &#183; </span>  {dayStr}, {day} {monthStr} </p>
-            <p className="location"><span className="material-symbols-rounded"> location_on </span>{location || 'Paris'}</p>
+            <p className="location"><span className="material-symbols-rounded"> location_on </span>{location || 'Paris' }</p>
 
         </div>
 
