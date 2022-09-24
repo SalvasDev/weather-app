@@ -20,6 +20,11 @@ const Container = styled.div`
     background-color: var(--bluedark);
     height: 100vh;
 
+
+      @media (max-width: 510px) {
+            height: 100vh;
+        }
+
     .row_search {
         display: flex;
         width: 100%;
