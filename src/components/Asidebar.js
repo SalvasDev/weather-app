@@ -22,7 +22,7 @@ const Container = styled.div`
 
 
       @media (max-width: 510px) {
-            height: 100vh;
+            height: 100%;
         }
 
     .row_search {

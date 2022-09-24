@@ -8,11 +8,11 @@ import styled from '@emotion/styled'
 
 const Container = styled.div`
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: var(--bluedark);
 
         @media (max-width: 510px) {
-            height: 100vh;
+            height: 100%;
         }
    
 
