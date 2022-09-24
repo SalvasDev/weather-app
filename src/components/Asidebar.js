@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from 'react'
+import React, {useEffect, useContext, useState} from 'react'
 import './asidebar.css'
 import CurrentContext from './context/CurrentContext'
 import LocContext from './context/LocContext'
@@ -18,6 +18,7 @@ import styled from '@emotion/styled'
 
 const Container = styled.div`
     background-color: var(--bluedark);
+    height: 100vh;
 
     .row_search {
         display: flex;
@@ -113,11 +114,12 @@ const Container = styled.div`
 
 
 
-const Asidebar = ({setShowbar, setShowaside, handleForce, coordenades, consCoord}) => {
+const Asidebar = ({setShowbar, setShowaside, handleForce, coordenades}) => {
 
-const { consult2, dataConsult, setDataConsult, weather, setWeather, setWeathFive } = useContext(CurrentContext)
+const  [ tempLocation, setTempLocation ] = useState('')
 
-const { location, setLocation } = useContext(LocContext)
+  const { consult2, dataConsult, setDataConsult, weather, setWeather, setWeathFive } = useContext(CurrentContext)
+const { location } = useContext(LocContext)
 const { typeweather } = useContext(TypeWeContext)
 
 
@@ -140,16 +142,15 @@ const { typeweather } = useContext(TypeWeContext)
  
 // Getting the current weeather with details and the 5 next days
 
-
   useEffect(() => {
   // If we have coords then make a special query with a coords
-      if (consCoord) {
-
+      if (coordenades) {
+        if (consult2) {
           const getCurrentCoords =  async (coordenades) => {
           var { lat, lng } = coordenades  
     
-            var lat2 = parseFloat(lat.toFixed(3))
-            var lng2 = parseFloat(lng.toFixed(3))
+            var lat2 = parseFloat(lat)
+            var lng2 = parseFloat(lng)
 
             const key = process.env.REACT_APP_KEY
             const baseCoords = process.env.REACT_APP_BASECOORDS
@@ -158,8 +159,7 @@ const { typeweather } = useContext(TypeWeContext)
             const response = await fetch(baseCoords+query)
 
             const dataCurrent = await response.json()
-            console.log(dataCurrent)
-            // setLocation(dataCurrent.LocalizedName)
+            setTempLocation(dataCurrent.LocalizedName)
             return dataCurrent.Key                
       }
 
@@ -167,7 +167,7 @@ const { typeweather } = useContext(TypeWeContext)
       getCurrentCoords(coordenades).then(dataCurrent => {setDataConsult(dataCurrent)})
 
 
-          const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}, consult2) => {
+          const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}) => {
 
             const key = process.env.REACT_APP_KEY
             const base = process.env.REACT_APP_BASECURR
@@ -178,9 +178,10 @@ const { typeweather } = useContext(TypeWeContext)
             return dataCurrent[0]       
           } 
 
-      getCurrentW(dataConsult, consult2).then(dataCurrent => {setWeather(dataCurrent)})
+      getCurrentW(dataConsult).then(dataCurrent => {setWeather(dataCurrent)})
+        }
  
-    }  else if (!consCoord) {
+    }  else if (!coordenades) {
 
           // If dont have coords then consult with a default city
 
@@ -193,7 +194,7 @@ const { typeweather } = useContext(TypeWeContext)
 
             const response = await fetch(base + query)
             const dataCurrent = await response.json()
-            return dataCurrent[0]       
+             return dataCurrent[0]       
           } 
 
       }
@@ -203,7 +204,7 @@ const { typeweather } = useContext(TypeWeContext)
     }     
       
 
-
+// Consult to five days forecast weather
 const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
 
         const key = process.env.REACT_APP_KEY
@@ -307,7 +308,7 @@ const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
             {/* Date */}
 
             <p className="today_date">Today <span> &#183; </span>  {dayStr}, {day} {monthStr} </p>
-            <p className="location"><span className="material-symbols-rounded"> location_on </span>{location || 'Paris' }</p>
+            <p className="location"><span className="material-symbols-rounded"> location_on </span>{ tempLocation || location || 'Paris' }</p>
 
         </div>
 

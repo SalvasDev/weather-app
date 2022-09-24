@@ -27,7 +27,6 @@ function App() {
   const [ showbar, setShowbar ] = useState(false)
   const [ showaside, setShowaside ] = useState(true)    
   const [ coordenades, setCoordenades ] = useState({})
-  const [ consCoord, setConsCoord ] = useState(false)
 
   function handleForce(){
    window.location.reload()
@@ -45,10 +44,7 @@ useEffect(() => {
             lng: longitude
           }
             setCoordenades(coords)
-            setConsCoord(true)
-        }, () => {
-          alert ('Error')
-        })
+        }, )
     } else {
       alert('Your browser does not have a geolocation option')
       throw new Error ('Your browser does not have a geolocation option')
@@ -75,7 +71,6 @@ useEffect(() => {
           setShowaside = {setShowaside}
           handleForce = {handleForce}
           coordenades = {coordenades}
-          consCoord = {consCoord}
            />
            : null } 
        <div className="content"> 
