@@ -139,8 +139,8 @@ const Searchbar = ({ setShowbar, setShowaside }) => {
         setShowbar(false)
         setShowaside(true)
     }
-  
-    
+
+
 
     useEffect(() => {
         setShowaside(false)
@@ -176,7 +176,7 @@ const Searchbar = ({ setShowbar, setShowaside }) => {
 
             if (consult) {
                 const key = process.env.REACT_APP_KEY
-                const baseCities =  process.env.REACT_APP_BASECITIES
+                const baseCities = process.env.REACT_APP_BASECITIES
                 const query = `?apikey=${key}&q=${location}`
                 const response = await axios.get(baseCities + query)
 
@@ -194,7 +194,7 @@ const Searchbar = ({ setShowbar, setShowaside }) => {
                     } else {
                         if (groupCities[i - 1].AdministrativeArea.ID !== response.data[i].AdministrativeArea.ID) {
                             groupCities.push(response.data[i])
-                        } 
+                        }
                     }
                     if (groupCities.length === response.data.length) {
                         return

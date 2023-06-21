@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from '@emotion/styled';
 import Searchbar from './components/Searchbar';
 import { CurrentContextProvider } from './components/context/CurrentContext';
@@ -23,61 +23,64 @@ const Container = styled.div`
 
 
 function App() {
+  const [showbar, setShowbar] = useState(false);
+  const [showaside, setShowaside] = useState(true);
+  const [coordenades, setCoordenades] = useState({});
 
-  const [ showbar, setShowbar ] = useState(false)
-  const [ showaside, setShowaside ] = useState(true)    
-  const [ coordenades, setCoordenades ] = useState({})
+  function handleForce() {
+    window.location.reload();
+  }
 
-  function handleForce(){
-   window.location.reload()
-}
-
-
-useEffect(() => {
-
+  useEffect(() => {
     if (navigator.geolocation) {
-
-        navigator.geolocation.getCurrentPosition(
-          ({ coords: {latitude, longitude}}) => {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords: { latitude, longitude } }) => {
           const coords = {
             lat: latitude,
-            lng: longitude
-          }
-            setCoordenades(coords)
-        }, )
+            lng: longitude,
+          };
+          setCoordenades(coords);
+        },
+        () => {
+          alert('Unable to retrieve location. Default location will be used.');
+          // Aquí puedes establecer las coordenadas predeterminadas si no se pueden obtener las coordenadas del usuario.
+          const defaultCoords = {
+            lat: 0,
+            lng: 0,
+          };
+          setCoordenades(defaultCoords);
+        }
+      );
     } else {
-      alert('Your browser does not have a geolocation option')
-      throw new Error ('Your browser does not have a geolocation option')
-    }            
-
- }, [])     
-
+      alert('Your browser does not have a geolocation option');
+      throw new Error('Your browser does not have a geolocation option');
+    }
+  }, []);
 
   return (
-    <Container >
+    <Container>
       <CurrentContextProvider>
         <LocContextProvider>
           <TypeWContextProvider>
-      { showbar ? 
-      <Searchbar 
-        setShowbar={setShowbar}
-        setShowaside = {setShowaside}
-        /> : null}
-        
-       { showaside ?
-        <Asidebar
-          setShowbar = {setShowbar}
-          showaside = {showaside}
-          setShowaside = {setShowaside}
-          handleForce = {handleForce}
-          coordenades = {coordenades}
-           />
-           : null } 
-       <div className="content"> 
-            <Content />    
-        </div>
+            {showbar && (
+              <Searchbar setShowbar={setShowbar} setShowaside={setShowaside} />
+            )}
+
+            {coordenades && Object.keys(coordenades).length > 0 && (
+              <Asidebar
+                setShowbar={setShowbar}
+                showaside={showaside}
+                setShowaside={setShowaside}
+                handleForce={handleForce}
+                coordenades={coordenades}
+              />
+            )}
+
+            <div className="content">
+              <Content />
+            </div>
           </TypeWContextProvider>
-        </LocContextProvider>     
+        </LocContextProvider>
       </CurrentContextProvider>
     </Container>
   );

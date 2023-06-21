@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useState} from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import './asidebar.css'
 import CurrentContext from './context/CurrentContext'
 import LocContext from './context/LocContext'
@@ -14,6 +14,8 @@ import Shower from '../img/Shower.png'
 import HeavyCloud from '../img/HeavyCloud.png'
 import Thunderstorm from '../img/Thunderstorm.png'
 import styled from '@emotion/styled'
+import axios from 'axios';
+
 
 
 const Container = styled.div`
@@ -119,115 +121,123 @@ const Container = styled.div`
 
 
 
-const Asidebar = ({setShowbar, setShowaside, handleForce, coordenades}) => {
+const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
-const  [ tempLocation, setTempLocation ] = useState('')
+  const [tempLocation, setTempLocation] = useState('')
 
   const { consult2, dataConsult, setDataConsult, weather, setWeather, setWeathFive } = useContext(CurrentContext)
-const { location } = useContext(LocContext)
-const { typeweather } = useContext(TypeWeContext)
+  const { location } = useContext(LocContext)
+  const { typeweather } = useContext(TypeWeContext)
 
 
 
-
-    useEffect(() => {
-        setShowaside(true)
-    }, [])
-
-
-
-    var dafaultLoc = 0
-    
-    if (!dataConsult) {
-        dafaultLoc = 623              
-    }  else {
-      dafaultLoc = dataConsult
-    }
-
- 
-// Getting the current weeather with details and the 5 next days
 
   useEffect(() => {
-  // If we have coords then make a special query with a coords
-      if (coordenades) {
-        if (consult2) {
-          const getCurrentCoords =  async (coordenades) => {
-          var { lat, lng } = coordenades  
-    
-            var lat2 = parseFloat(lat)
-            var lng2 = parseFloat(lng)
-
-            const key = process.env.REACT_APP_KEY
-            const baseCoords = process.env.REACT_APP_BASECOORDS
-            const query = `?apikey=${key}&q=${lat2},${lng2}`
-
-            const response = await fetch(baseCoords+query)
-
-            const dataCurrent = await response.json()
-            setTempLocation(dataCurrent.LocalizedName)
-            return dataCurrent.Key                
-      }
-
-      // Set the weather with key founded with coords
-      getCurrentCoords(coordenades).then(dataCurrent => {setDataConsult(dataCurrent)})
+    setShowaside(true)
+    console.log(coordenades);
+  }, [])
 
 
-          const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}) => {
+  /////////////////////
 
-            const key = process.env.REACT_APP_KEY
-            const base = process.env.REACT_APP_BASECURR
-            const query = `${dataConsult}?apikey=${key}&details=true`
 
-            const response = await fetch(base + query)
-            const dataCurrent = await response.json()
-            return dataCurrent[0]       
-          } 
 
-      getCurrentW(dataConsult).then(dataCurrent => {setWeather(dataCurrent)})
-        }
- 
-    }  else if (!coordenades) {
 
-          // If dont have coords then consult with a default city
+  var dafaultLoc = 0
 
-          const getCurrentW =  async ( {dataConsult = dafaultLoc} = {}, consult2) => {
-
-          if (consult2) {
-            const key = process.env.REACT_APP_KEY
-            const base = process.env.REACT_APP_BASECURR
-            const query = `${dataConsult}?apikey=${key}&details=true`
-
-            const response = await fetch(base + query)
-            const dataCurrent = await response.json()
-             return dataCurrent[0]       
-          } 
-
-      }
-
-      getCurrentW(dataConsult, consult2).then(dataCurrent => {setWeather(dataCurrent)})
-
-    }     
-      
-
-// Consult to five days forecast weather
-const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
-
-        const key = process.env.REACT_APP_KEY
-        const basefived = process.env.REACT_APP_BASEFIVED
-        const query = `${dataConsult}?apikey=${key}`
-
-        const response = await fetch(basefived + query)
-        const data = await response.json()
-        return data.DailyForecasts       
+  if (!dataConsult) {
+    dafaultLoc = 623
+  } else {
+    dafaultLoc = dataConsult
   }
-    getFive(dataConsult).then(fivedays => {setWeathFive(fivedays)} )
+
+
+  // Getting the current weeather with details and the 5 next days
+
+
+  useEffect(() => {
+    // If we have coords then make a special query with a coords
+    if (coordenades) {
+      if (consult2) {
+
+        const getCurrentCoords = async (coordenades) => {
+          var { lat, lng } = coordenades
+
+          var lat2 = parseFloat(lat)
+          var lng2 = parseFloat(lng)
+
+          const key = process.env.REACT_APP_KEY
+          const baseCoords = process.env.REACT_APP_BASECOORDS
+          const query = `?apikey=${key}&q=${lat2},${lng2}`
+
+          const response = await fetch(baseCoords + query)
+
+          const dataCurrent = await response.json()
+
+          setTempLocation(dataCurrent.LocalizedName)
+          return dataCurrent.Key
+        }
+
+        // Set the weather with key founded with coords
+        getCurrentCoords(coordenades).then(dataCurrent => { setDataConsult(dataCurrent) })
+
+
+        const getCurrentW = async ({ dataConsult = dafaultLoc } = {}) => {
+
+          const key = process.env.REACT_APP_KEY
+          const base = process.env.REACT_APP_BASECURR
+          const query = `${dataConsult}?apikey=${key}&details=true`
+
+          const response = await fetch(base + query)
+          const dataCurrent = await response.json()
+          return dataCurrent[0]
+        }
+
+        getCurrentW(dataConsult).then(dataCurrent => { setWeather(dataCurrent) })
+      }
+
+    } else if (!coordenades) {
+
+      // If dont have coords then consult with a default city
+
+      const getCurrentW = async ({ dataConsult = dafaultLoc } = {}, consult2) => {
+
+        if (consult2) {
+          const key = process.env.REACT_APP_KEY
+          const base = process.env.REACT_APP_BASECURR
+          const query = `${dataConsult}?apikey=${key}&details=true`
+
+          const response = await fetch(base + query)
+          const dataCurrent = await response.json()
+          return dataCurrent[0]
+        }
+
+      }
+
+      getCurrentW(dataConsult, consult2).then(dataCurrent => { setWeather(dataCurrent) })
+
+    }
+
+
+    // Consult to five days forecast weather
+    const getFive = async ({ dataConsult = dafaultLoc } = {}) => {
+
+      const key = process.env.REACT_APP_KEY
+      const basefived = process.env.REACT_APP_BASEFIVED
+      const query = `${dataConsult}?apikey=${key}`
+
+      const response = await fetch(basefived + query)
+      const data = await response.json()
+      return data.DailyForecasts
+    }
+    getFive(dataConsult).then(fivedays => { setWeathFive(fivedays) })
 
 
 
-  },[consult2])
+  }, [consult2])
 
-    
 
+  /////////////////////////////////////////////////////
 
   const handleClick = (e) => {
     e.preventDefault()
@@ -238,16 +248,16 @@ const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
 
 
   const handleSubmit = () => {
-        handleForce()
-    } 
+    handleForce()
+  }
 
 
-  
+
   var icon = 0;
   var temp = 0;
   var sufijTemp = '';
 
-  var { WeatherIcon, WeatherText, Temperature  } = weather || {}
+  var { WeatherIcon, WeatherText, Temperature } = weather || {}
 
   // console.log('esto hay en weather');
   // console.log(weather);
@@ -255,37 +265,37 @@ const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
   if (typeweather === 'C') {
     temp = Math.floor(Temperature?.Metric?.Value)
     sufijTemp = 'C'
-  }  else if ( typeweather === 'F' ) {
+  } else if (typeweather === 'F') {
     temp = Math.floor(Temperature?.Imperial?.Value)
     sufijTemp = 'F'
   }
 
 
 
-  if ( (WeatherIcon > 0 && WeatherIcon < 4) || (WeatherIcon > 29 &&  WeatherIcon < 31 ) || (WeatherIcon > 32 && WeatherIcon < 35) ) {
-     icon = Clear 
-  } else if ( (WeatherIcon > 3 && WeatherIcon < 6) || (WeatherIcon > 20 && WeatherIcon < 22) || (WeatherIcon > 34 && WeatherIcon < 37) ) {
-     icon = LightCloud
-  } else if ( (WeatherIcon > 5  && WeatherIcon < 11)  || (WeatherIcon > 18  && WeatherIcon < 21) || (WeatherIcon > 31  && WeatherIcon < 33) || (WeatherIcon > 36  && WeatherIcon < 39) || (WeatherIcon > 42 && WeatherIcon < 44)) {
-    icon = HeavyCloud 
-  } else if ( (WeatherIcon > 11 && WeatherIcon < 13) || (WeatherIcon > 39 && WeatherIcon < 41) )  {
+  if ((WeatherIcon > 0 && WeatherIcon < 4) || (WeatherIcon > 29 && WeatherIcon < 31) || (WeatherIcon > 32 && WeatherIcon < 35)) {
+    icon = Clear
+  } else if ((WeatherIcon > 3 && WeatherIcon < 6) || (WeatherIcon > 20 && WeatherIcon < 22) || (WeatherIcon > 34 && WeatherIcon < 37)) {
+    icon = LightCloud
+  } else if ((WeatherIcon > 5 && WeatherIcon < 11) || (WeatherIcon > 18 && WeatherIcon < 21) || (WeatherIcon > 31 && WeatherIcon < 33) || (WeatherIcon > 36 && WeatherIcon < 39) || (WeatherIcon > 42 && WeatherIcon < 44)) {
+    icon = HeavyCloud
+  } else if ((WeatherIcon > 11 && WeatherIcon < 13) || (WeatherIcon > 39 && WeatherIcon < 41)) {
     icon = Shower
-  } else if ( (WeatherIcon > 12 && WeatherIcon < 15) || (WeatherIcon > 38 && WeatherIcon < 40 ) ) {
-    icon = LightRain 
-  } else if ( (WeatherIcon > 14 && WeatherIcon < 18) || (WeatherIcon > 40 && WeatherIcon < 43 ) ) {
-    icon = Thunderstorm 
-  } else if ( WeatherIcon > 17 && WeatherIcon < 19 ) {
-    icon = HeavyRain 
-  } else if ( (WeatherIcon >23 && WeatherIcon < 25) || (WeatherIcon  > 30 && WeatherIcon < 32 ) ){
-    icon = Snow 
-  } else if ( WeatherIcon > 24 && WeatherIcon < 26 ) {
+  } else if ((WeatherIcon > 12 && WeatherIcon < 15) || (WeatherIcon > 38 && WeatherIcon < 40)) {
+    icon = LightRain
+  } else if ((WeatherIcon > 14 && WeatherIcon < 18) || (WeatherIcon > 40 && WeatherIcon < 43)) {
+    icon = Thunderstorm
+  } else if (WeatherIcon > 17 && WeatherIcon < 19) {
+    icon = HeavyRain
+  } else if ((WeatherIcon > 23 && WeatherIcon < 25) || (WeatherIcon > 30 && WeatherIcon < 32)) {
+    icon = Snow
+  } else if (WeatherIcon > 24 && WeatherIcon < 26) {
     icon = Sleet
-  } else if ( (WeatherIcon > 25 && WeatherIcon < 30) || (WeatherIcon > 43 && WeatherIcon < 45 ) ){
+  } else if ((WeatherIcon > 25 && WeatherIcon < 30) || (WeatherIcon > 43 && WeatherIcon < 45)) {
     icon = Hail
-   return
+    return
   }
 
-  var today =  new Date()
+  var today = new Date()
   var month = today.toDateString()
   var day = today.getDate()
   var dayStr = month.substring(0, month.length - 12)
@@ -293,29 +303,29 @@ const getFive =  async ({dataConsult = dafaultLoc} = {}) => {
 
 
 
-  
+
   return (
     <Container>
-        <div className="aside__bar">
-            <div className= 'row_search'>
-              <button onClick={ e => { handleClick(e) } } className="btn_search">Search for places</button>
-                
-                  <button onClick = { () => handleSubmit()} className="btncross_search">
-                    <span className="material-symbols-rounded">my_location</span>
-                  </button>
-            </div>
+      <div className="aside__bar">
+        <div className='row_search'>
+          <button onClick={e => { handleClick(e) }} className="btn_search">Search for places</button>
 
-            {/* Bing icon central */}
-            <img className="bigicon_weather" src={icon} alt="Cloud and son" />
-            <h1 className="biggrades_weather">{temp}<span className="type_grades">&ordm;{sufijTemp}</span> </h1>
-            <h2 className="type_weather">{WeatherText}</h2>    
-
-            {/* Date */}
-
-            <p className="today_date">Today <span> &#183; </span>  {dayStr}, {day} {monthStr} </p>
-            <p className="location"><span className="material-symbols-rounded"> location_on </span>{ tempLocation || location || 'Paris' }</p>
-
+          <button onClick={() => handleSubmit()} className="btncross_search">
+            <span className="material-symbols-rounded">my_location</span>
+          </button>
         </div>
+
+        {/* Bing icon central */}
+        <img className="bigicon_weather" src={icon} alt="Cloud and son" />
+        <h1 className="biggrades_weather">{temp}<span className="type_grades">&ordm;{sufijTemp}</span> </h1>
+        <h2 className="type_weather">{WeatherText}</h2>
+
+        {/* Date */}
+
+        <p className="today_date">Today <span> &#183; </span>  {dayStr}, {day} {monthStr} </p>
+        <p className="location"><span className="material-symbols-rounded"> location_on </span>{tempLocation || location || 'Paris'}</p>
+
+      </div>
 
     </Container>
   )
