@@ -14,8 +14,6 @@ import Shower from '../img/Shower.png'
 import HeavyCloud from '../img/HeavyCloud.png'
 import Thunderstorm from '../img/Thunderstorm.png'
 import styled from '@emotion/styled'
-import axios from 'axios';
-
 
 
 const Container = styled.div`
@@ -134,7 +132,6 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
   useEffect(() => {
     setShowaside(true)
-    console.log(coordenades);
   }, [])
 
 
