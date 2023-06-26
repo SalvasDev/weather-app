@@ -155,6 +155,7 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
   useEffect(() => {
     // If we have coords then make a special query with a coords
     if (coordenades) {
+      console.log(coordenades);
       if (consult2) {
 
         const getCurrentCoords = async (coordenades) => {
@@ -187,6 +188,8 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
           const response = await fetch(base + query)
           const dataCurrent = await response.json()
+          console.log(dataCurrent[0]);
+
           return dataCurrent[0]
         }
 
@@ -225,7 +228,10 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
       const response = await fetch(basefived + query)
       const data = await response.json()
+      console.log(data.DailyForecasts);
+
       return data.DailyForecasts
+
     }
     getFive(dataConsult).then(fivedays => { setWeathFive(fivedays) })
 
