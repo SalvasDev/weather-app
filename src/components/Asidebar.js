@@ -137,9 +137,7 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
   /////////////////////
 
-  useEffect(() => {
-    console.log(weather);
-  }, [weather])
+
 
 
   var defaultLoc = 0
@@ -181,7 +179,7 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
         getCurrentCoords(coordenades).then(dataCurrent => { setDataConsult(dataCurrent) })
 
 
-        const getCurrentW = async (dataConsult = defaultLoc) => {
+        const getCurrentW = async ({ dataConsult = defaultLoc } = {}) => {
 
           const key = process.env.REACT_APP_KEY
           const base = process.env.REACT_APP_BASECURR
@@ -199,7 +197,7 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
       // If dont have coords then consult with a default city
 
-      const getCurrentW = async (dataConsult = defaultLoc, consult2) => {
+      const getCurrentW = async ({ dataConsult = defaultLoc } = {}, consult2) => {
 
         if (consult2) {
           const key = process.env.REACT_APP_KEY
@@ -209,7 +207,6 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
           const response = await fetch(base + query)
           const dataCurrent = await response.json()
           return dataCurrent[0]
-
         }
 
       }
@@ -220,7 +217,7 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
 
     // Consult to five days forecast weather
-    const getFive = async (dataConsult = defaultLoc) => {
+    const getFive = async ({ dataConsult = defaultLoc } = {}) => {
 
       const key = process.env.REACT_APP_KEY
       const basefived = process.env.REACT_APP_BASEFIVED
@@ -234,7 +231,7 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
 
 
-  }, [dataConsult, consult2, coordenades, defaultLoc, setDataConsult, setWeathFive, setWeather])
+  }, [consult2])
 
 
   /////////////////////////////////////////////////////
