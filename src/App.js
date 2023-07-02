@@ -57,6 +57,10 @@ function App() {
     }
   }, []);
 
+  if ((!coordenades || !Object.keys(coordenades).length > 0 || !showaside)) {
+    return (<></>)
+  }
+
   return (
     <Container>
       <CurrentContextProvider>
