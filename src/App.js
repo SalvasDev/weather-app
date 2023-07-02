@@ -66,7 +66,7 @@ function App() {
               <Searchbar setShowbar={setShowbar} setShowaside={setShowaside} />
             )}
 
-            {showaside && (
+            {(coordenades && Object.keys(coordenades).length > 0 && showaside) && (
               <Asidebar
                 setShowbar={setShowbar}
                 showaside={showaside}
