@@ -42,7 +42,7 @@ function App() {
           setCoordenades(coords);
         },
         () => {
-          alert('Unable to retrieve location. Default location will be used.');
+          alert('No se puede obtener la ubicación. Se utilizará la ubicación predeterminada.');
           // Aquí puedes establecer las coordenadas predeterminadas si no se pueden obtener las coordenadas del usuario.
           const defaultCoords = {
             lat: 0,
@@ -52,8 +52,8 @@ function App() {
         }
       );
     } else {
-      alert('Your browser does not have a geolocation option');
-      throw new Error('Your browser does not have a geolocation option');
+      alert('Su browser no tiene opción de geolocalización');
+      throw new Error('Su browser no tiene opción de geolocalización');
     }
   }, []);
 
@@ -66,7 +66,7 @@ function App() {
               <Searchbar setShowbar={setShowbar} setShowaside={setShowaside} />
             )}
 
-            {coordenades && Object.keys(coordenades).length > 0 && (
+            {showaside && (
               <Asidebar
                 setShowbar={setShowbar}
                 showaside={showaside}

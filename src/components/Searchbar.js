@@ -134,7 +134,7 @@ const Searchbar = ({ setShowbar, setShowaside }) => {
 
 
     // Hide the searchbar
-    const handleClose = e => {
+    const handleClose = (e) => {
         e.preventDefault()
         setShowbar(false)
         setShowaside(true)
@@ -211,7 +211,7 @@ const Searchbar = ({ setShowbar, setShowaside }) => {
         }
         loadPlaces(location)
 
-    }, [consult])
+    }, [consult, location])
 
 
 
@@ -222,7 +222,7 @@ const Searchbar = ({ setShowbar, setShowaside }) => {
 
         <Container>
             {/* button close */}
-            <button onClick={e => { handleClose(e) }} className="cancel"><span className="material-symbols-rounded">close </span></button>
+            <button onClick={e => handleClose(e)} className="cancel"><span className="material-symbols-rounded">close </span></button>
             <div className="search">
                 {error ? <p className="error">Please enter a value</p> : null}
                 <form

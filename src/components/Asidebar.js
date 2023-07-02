@@ -109,6 +109,7 @@ const Container = styled.div`
       font-size: 1.8rem;
       vertical-align: middle;
       margin-bottom: 7rem;
+      text-transform: capitalize;
 
       .material-symbols-rounded {
         justify-self: center;
@@ -155,7 +156,6 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
   useEffect(() => {
     // If we have coords then make a special query with a coords
     if (coordenades) {
-      console.log(coordenades);
       if (consult2) {
 
         const getCurrentCoords = async (coordenades) => {
@@ -188,7 +188,6 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
           const response = await fetch(base + query)
           const dataCurrent = await response.json()
-          console.log(dataCurrent[0]);
 
           return dataCurrent[0]
         }
@@ -228,7 +227,6 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
       const response = await fetch(basefived + query)
       const data = await response.json()
-      console.log(data.DailyForecasts);
 
       return data.DailyForecasts
 
@@ -237,7 +235,10 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
 
 
-  }, [consult2])
+  }, [dataConsult])
+
+
+
 
 
   /////////////////////////////////////////////////////
@@ -262,8 +263,6 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
 
   var { WeatherIcon, WeatherText, Temperature } = weather || {}
 
-  // console.log('esto hay en weather');
-  // console.log(weather);
 
   if (typeweather === 'C') {
     temp = Math.floor(Temperature?.Metric?.Value)
@@ -305,7 +304,7 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
   var monthStr = month.substring(4, month.length - 7)
 
 
-
+  const actualLocation = location ? location : tempLocation ? tempLocation : 'Paris'
 
   return (
     <Container>
@@ -326,7 +325,7 @@ const Asidebar = ({ setShowbar, setShowaside, handleForce, coordenades }) => {
         {/* Date */}
 
         <p className="today_date">Today <span> &#183; </span>  {dayStr}, {day} {monthStr} </p>
-        <p className="location"><span className="material-symbols-rounded"> location_on </span>{tempLocation || location || 'Paris'}</p>
+        <p className="location"><span className="material-symbols-rounded"> location_on </span>{actualLocation}</p>
 
       </div>
 
